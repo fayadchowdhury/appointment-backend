@@ -2,35 +2,31 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../../dbPool');
 
-// To view own profile
-// Check via UUID
 router.get('/', (req, res) => {
     const query = `SELECT *, AGE(DOB) FROM DOCTORS INNER JOIN DOCTOR_RATINGS ON DOCTORS.ID = DOCTOR_RATINGS.DOCTOR_ID WHERE ID = '${req.body.docid}'`;
-    console.log(query);
     pool.query(query, (err, result) => {
         if ( err )
         {
-            res.status(404).send(err);
+            res.status(666).json({message: err});
         }
         else
         {
-            res.status(200).json(result.rows);
+            if ( result.rows.length )
+                res.status(200).json({message: "Doctor fetched successfully", resultobj: result.rows});
+            else
+                res.status(404).json({message: "No matching doctor found"});
         }
-    })
+    });
 });
 
-
-// To create new doctor entries
-// req will have docname, docdob (in YYYY-MM-DD format), docgender (M/F), docblood (A+, A-, B+, B-, O+, O-, AB+, AB-), docphone, doclocation (only smallest specific area), docspecialty, docbmdc, docemail
 router.post('/', (req, res) => {
     const query = `insert into doctors 
     (id, name, dob, gender, blood, phone, specialty, bmdc, location, email) values 
     (uuid_generate_v4(), '${req.body.docname}', '${req.body.docdob}', '${req.body.docgender}', '${req.body.docblood}', '${req.body.docphone}', '${req.body.docspecialty}', '${req.body.docbmdc}', '${req.body.doclocation}', '${req.body.docemail}')`;
-    pool.query(query, (err, result) =>
-    {
+    pool.query(query, (err, result) => {
         if ( err )
         {
-            res.status(404).send(err);
+            res.status(666).json({message: err});
         }
         else
         {
@@ -39,10 +35,6 @@ router.post('/', (req, res) => {
     });
 });
 
-
-// To update user (has to be done by the user himself/herself)
-// Check based on UUID
-// Can change everything except email
 router.put('/', (req, res) => {
     var query = `UPDATE DOCTORS`;
 
@@ -178,33 +170,62 @@ router.put('/', (req, res) => {
         }
     }
     query = query + ` WHERE ID = '${req.body.docid}'`;
-    pool.query(query, (err, result) =>
-    {
-        if ( err )
+    const queryCheck = `SELECT * FROM DOCTORS WHERE ID = '${req.body.docid}'`;
+    pool.query(queryCheck, (err1, result1) => {
+        if ( err1 )
         {
-            res.status(404).send(err);
+            res.status(666).json({message: err1});
         }
         else
         {
-            res.status(200).json({message: "Doctor updated successfully"});
+            if ( result1.rowCount == 0 )
+            {
+                res.status(404).json({message: "No matching doctor found"});
+            }
+            else
+            {
+                pool.query(query, (err2, result2) => {
+                    if ( err2 )
+                    {
+                        res.status(666).json({message: err2});
+                    }
+                    else
+                    {
+                        res.status(200).json({message: "Doctor updated successfully"});
+                    }
+                });
+            }
         }
     });
 });
 
-
-// To delete user (has to be done by user himself/herself)
-// Check based on UUID
 router.delete('/', (req, res) => {
     const query = `DELETE FROM DOCTORS WHERE ID = '${req.body.docid}'`;
-    pool.query(query, (err, result) =>
-    {
-        if ( err )
+    const queryCheck = `SELECT * FROM DOCTORS WHERE ID = '${req.body.docid}'`;
+    pool.query(queryCheck, (err1, result1) => {
+        if ( err1 )
         {
-            res.status(404).send(err);
+            res.status(666).json({message: err1});
         }
         else
         {
-            res.status(200).json({message: "Doctor deleted successfully"});
+            if ( result1.rowCount == 0 )
+            {
+                res.status(404).json({message: "No matching doctor found"});
+            }
+            else
+            {
+                pool.query(query, (err2, result2) => {
+                    if ( err2 )
+                    {
+                        res.status(666).json({message: err2});
+                    }
+                    else
+                    {
+                        res.status(200).json({message: "Doctor deleted successfully"});
+                    }
+                });
+            }
         }
     });
 });

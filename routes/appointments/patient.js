@@ -6,14 +6,17 @@ const pool = require('../../dbPool');
 router.get('/', (req, res) => {
     const query = `SELECT APPOINTMENTS.*, DOCTORS.NAME FROM APPOINTMENTS INNER JOIN DOCTORS ON APPOINTMENTS.DOCTOR_ID = DOCTORS.ID WHERE APPOINTMENTS.PATIENT_ID = '${req.body.patientid}'`;
     pool.query(query, (err, result) => {
-       if ( err )
-       {
-           res.status(400).send(err);
-       }
-       else
-       {
-           res.json(result.rows);
-       }
+        if ( err )
+        {
+            res.status(666).json({message: err});
+        }
+        else
+        {
+            if ( result.rowCount != 0 )
+                res.status(200).json({message: "Appointments fetched successfully", resultobj: result.rows});
+            else
+                res.status(404).json({message: "No appointments found"});
+        }
     });
 });
 
@@ -23,11 +26,11 @@ router.post('/', (req, res) => {
     pool.query(query, (err, result) => {
         if ( err )
         {
-            res.status(404).send(err);
+            res.status(666).json({message: err});
         }
         else
         {
-            res.status(200).json({message: "Appointment registered successfully"});
+            res.status(200).json({message: "Appointment posted successfully"});
         }
     });
 });
@@ -104,30 +107,65 @@ router.put('/', (req, res) => {
         }
     }
     query = query + ` WHERE DOCTOR_ID = '${req.body.docid}' AND PATIENT_ID = '${req.body.patientid}'`;
-    pool.query(query, (err, result) =>
-    {
-        if ( err )
-        {
-            res.status(404).send(err);
-        }
-        else
-        {
-            res.status(200).json({message: "Appointment updated successfully"});
-        }
+    const queryCheck = `SELECT * FROM APPOINTMENTS WHERE DOCTOR_ID = '${req.body.docid}' AND PATIENT_ID = '${req.body.patientid}'`;
+    pool.query(queryCheck, (err1, result1) => {
+       if ( err1 )
+       {
+           res.status(666).json({message: err1});
+       }
+       else
+       {
+           if ( result1.rowCount != 0 )
+           {
+               pool.query(query, (err2, result2) =>
+               {
+                   if ( err2 )
+                   {
+                       res.status(666).json({message: err2});
+                   }
+                   else
+                   {
+                       res.status(200).json({message: "Appointment updated successfully"});
+                   }
+               });
+           }
+           else
+           {
+               res.status(404).json({message: "No matching appointment found"});
+           }
+       }
     });
 });
 
 
 router.delete('/', (req, res) => {
     const query = `DELETE FROM APPOINTMENTS WHERE DOCTOR_ID = '${req.body.docid}' AND PATIENT_ID = '${req.body.patientid}' AND DATEOFAPPOINTMENT = '${req.body.appDate}'`;
-    pool.query(query, (err, result) => {
-        if ( err )
+    const queryCheck = `SELECT * FROM APPOINTMENTS WHERE DOCTOR_ID = '${req.body.docid}' AND PATIENT_ID = '${req.body.patientid}' AND DATEOFAPPOINTMENT = '${req.body.appDate}'`;
+    pool.query(queryCheck, (err1, result1) => {
+        if ( err1 )
         {
-            res.status(404).send(err);
+            res.status(666).json({message: err1});
         }
         else
         {
-            res.status(200).json({message: "Appointment deleted successfully"});
+            if ( result1.rowCount != 0 )
+            {
+                pool.query(query, (err2, result2) =>
+                {
+                    if ( err2 )
+                    {
+                        res.status(666).json({message: err2});
+                    }
+                    else
+                    {
+                        res.status(200).json({message: "Appointment deleted successfully"});
+                    }
+                });
+            }
+            else
+            {
+                res.status(404).json({message: "No matching appointment found"});
+            }
         }
     });
 });

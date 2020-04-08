@@ -1,0 +1,721 @@
+﻿Usage manual:
+
+
+1. /doctor/profile
+
+
+
+
+GET:
+
+
+JSON must contain docid as uuid of doctor
+e.g.
+{
+        "docid" : "099c2512-d2a4-402b-a1d2-0a8e922a2603"
+}
+
+
+Returns: 
+{
+        "message" : "Doctor fetched successfully",
+        "resultObj" : {JSON containing profile of doctor and rating with specified uuid in docid if found (200)}
+}
+(200)
+If not found (404)
+{
+        "message" : "No matching doctor found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+
+
+
+
+POST:
+
+
+JSON must contain docname as name of doctor, docdob as date of birth of doctor (in 'YYYY-MM-DD' format), docgender as gender of doctor (M / F), docblood as blood group of doctor (A+ / A- / B+ / B- / O+ / O- / AB+ / AB- ), docphone as phone number of doctor (has to be a valid Bangladeshi number), docspecialty as specialty of doctor (please make this brief; instead of Retina Specialist, write the broader term Ophthalmologist and instead of Paediatric Cardiologist, write Cardiologist), docbmdc as BMDC number of doctor (has to be valid), doclocation as location of doctor (please use smallest specific area string; instead of Babur Road, Mohammadpur, write Mohammadpur) and docemail as email address of doctor (must be valid)
+e.g.
+{
+        "docname" : "Dr. Fayad Chowdhury",
+        "doclocation" : "Dhanmondi",
+        "docspecialty" : "Cardiology",
+        "docdob" : "1998-07-11",
+        "docgender" : "M",
+        "docblood" : "A+",
+        "docphone" : "01746613595",
+        "docemail" : "fayad.chowdhury@gmail.com",
+        "docbmdc" : "1998JUL11CAR"
+}
+
+
+Returns: 
+JSON
+{
+        "message" : "Doctor registered successfully"
+} 
+(200)
+Error message if failed (666)
+
+
+
+
+PUT:
+
+
+JSON must contain docid as uuid of doctor, docname as updated name of doctor (or N/A), docdob as updated date of birth of doctor (in 'YYYY-MM-DD' format) (or N/A), docgender as updated gender of doctor (M / F) (or N/A), docblood as blood group of doctor (A+ / A- / B+ / B- / O+ / O- / AB+ / AB- ) (or N/A), docphone as updated phone number of doctor (has to be a valid Bangladeshi number) (or N/A), docspecialty as updated specialty of doctor (please make this brief; instead of Retina Specialist, write the broader term Ophthalmologist and instead of Paediatric Cardiologist, write Cardiologist) (or N/A), docbmdc as updated BMDC number of doctor (has to be valid) (or N/A), doclocation as updated location of doctor (please use smallest specific area string; instead of Babur Road, Mohammadpur, write Mohammadpur) (or N/A) and docemail as updated email address of doctor (must be valid) (or N/A)
+e.g.
+{
+        "docid" : "aeaa6dd7-bed2-4679-8e7d-65c20b869bd1",
+        "docname" : "Dr. Fayad Chowdhury",
+        "doclocation" : "Dhanmondi",
+        "docspecialty" : "Cardiology",
+        "docdob" : "1998-07-11",
+        "docgender" : "M",
+        "docblood" : "A+",
+        "docphone" : "01746613595",
+        "docemail" : "fayad.chowdhury@gmail.com",
+        "docbmdc" : "1998JUL11CAR"
+}
+
+
+N/A = no change required
+
+
+Returns: 
+JSON
+{
+        "message" : "Doctor updated successfully"
+} 
+(200)
+If not found (404)
+{
+        "message" : "No matching doctor found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+
+
+
+
+DELETE:
+
+
+JSON must contain docid as uuid of doctor
+e.g.
+{
+        "docid" : "21a7f69d-70f3-426b-bd16-7b3e39b017b5"
+}
+
+
+Returns: 
+JSON
+{
+        "message" : "Doctor deleted successfully"
+} 
+(200)
+If not found (404)
+{
+        "message" : "No matching doctor found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+
+
+2. /doctor/find
+
+
+
+
+GET:
+
+
+JSON must contain type as type of search (OR / AND / N/A), docname as name of doctor (name / N/A), doclocation as location of doctor (location / N/A) and docspecialty (specialty / N/A)
+e.g.
+{
+        "type" : "OR",
+        "docname" : "N/A",
+        "doclocation" : "N/A",
+        "docspecialty" : "N/A"
+}
+
+
+N/A = not specified, not included in the query
+ 
+Returns: 
+{
+        "message" : "Doctor fetched successfully",
+        "resultObj" : {JSON array containing profile of doctors and rating with specified criteria}
+}
+(200)
+If not found (404)
+{
+        "message" : "No matching doctor found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+
+
+OR will return profile if even one of the criteria is met (if just one condition is specified then it becomes the checking criteria in AND format)
+AND will return profile if all of the criteria are met
+
+
+
+
+
+
+
+
+
+
+________________
+
+
+3. /doctor/find/top
+
+
+
+
+GET:
+
+
+JSON must contain limit as the number of profiles to be shown, doclocation as location of doctor (location / N/A) and docspecialty (specialty / N/A)
+e.g.
+{
+        "limit" : "N/A",
+        "doclocation" : "N/A",
+        "docspecialty" : "N/A"
+}
+
+
+N/A = not specified, not included in the query
+
+
+Returns: 
+Returns: 
+{
+        "message" : "Doctor fetched successfully",
+        "resultObj" : {JSON array containing profile of doctors and rating with specified criteria}
+}
+(200)
+If not found (404)
+{
+        "message" : "No matching doctor found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+
+
+This is a AND query, meaning all of the criteria have to be met
+
+
+
+
+
+
+
+
+
+
+________________
+
+
+4. /doctor/times
+
+
+
+
+GET:
+
+
+JSON must contain docid as uuid of doctor
+e.g.
+{
+        "docid" : "21a7f69d-70f3-426b-bd16-7b3e39b017b5"
+}
+
+
+Returns:
+{
+        "message" : "Doctor times fetched successfully",
+        "resultObj" : {JSON of times of that doctor}
+}
+(200)
+If not found (404)
+{
+        "message" : "No times found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+
+
+
+
+POST:
+
+
+JSON must contain all of the fields below
+e.g.
+{
+        "docid" : "21a7f69d-70f3-426b-bd16-7b3e39b017b5",
+        "docsunStart" : "10:00",
+        "docsunEnd" : "17:00",
+        "docsunSlots" : "10",
+        "docmonStart" : "10:00",
+        "docmonEnd" : "17:00",
+        "docmonSlots" : "10",
+        "doctuesStart" : "10:00",
+        "doctuesEnd" : "17:00",
+        "doctuesSlots" : "10",
+        "docwedStart" : "10:00",
+        "docwedEnd" : "17:00",
+        "docwedSlots" : "10",
+        "docthursStart" : "10:00",
+        "docthursEnd" : "17:00",
+        "docthursSlots" : "10",
+        "docfriStart" : "10:00",
+        "docfriEnd" : "17:00",
+        "docfriSlots" : "10",
+        "docsatStart" : "10:00",
+        "docsatEnd" : "17:00",
+        "docsatSlots" : "10"
+}
+
+
+Returns:
+JSON
+{
+        "message" : "Doctor times posted successfully"
+}
+(200)
+Error message if failed (404)
+
+
+
+
+PUT:
+
+
+JSON must contain all of the fields below. Entries for time may be either a specified time or "N/A" if no change is to be made
+e.g.
+{
+        "docid" : "21a7f69d-70f3-426b-bd16-7b3e39b017b5",
+        "docsunStart" : "10:00",
+        "docsunEnd" : "17:00",
+        "docsunSlots" : "10",
+        "docmonStart" : "10:00",
+        "docmonEnd" : "17:00",
+        "docmonSlots" : "10",
+        "doctuesStart" : "10:00",
+        "doctuesEnd" : "17:00",
+        "doctuesSlots" : "10",
+        "docwedStart" : "10:00",
+        "docwedEnd" : "17:00",
+        "docwedSlots" : "10",
+        "docthursStart" : "10:00",
+        "docthursEnd" : "17:00",
+        "docthursSlots" : "10",
+        "docfriStart" : "10:00",
+        "docfriEnd" : "17:00",
+        "docfriSlots" : "10",
+        "docsatStart" : "10:00",
+        "docsatEnd" : "17:00",
+        "docsatSlots" : "10"
+}
+
+
+Returns:
+JSON
+{
+        "message" : "Doctor times updated successfully"
+}
+(200)
+If not found (404)
+{
+        "message" : "No times found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+
+
+
+
+DELETE:
+
+
+JSON must contain docid as uuid of doctor
+{
+        "docid" : "21a7f69d-70f3-426b-bd16-7b3e39b017b5"
+}
+
+
+Returns:
+JSON
+{
+        "message" : "Doctor times deleted successfully"
+}
+(200)
+If not found (404)
+{
+        "message" : "No times found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+________________
+
+
+5. /doctor/ratings
+
+
+
+
+PUT:
+
+
+JSON must contain docid as uuid of doctor and docrating as the provided rating
+e.g.
+{
+        "docid" : "21a7f69d-70f3-426b-bd16-7b3e39b017b5",
+        "docrating" : "5"
+}
+
+
+Returns:
+JSON
+{
+        "message" : "Ratings updated successfully"
+}
+(200)
+If not found (404)
+{
+        "message" : "No matching entry found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+________________
+
+
+6. /patient/profile
+
+
+GET:
+
+
+JSON must contain patientid as uuid of doctor
+e.g.
+{
+        "patientid" : "099c2512-d2a4-402b-a1d2-0a8e922a2603"
+}
+
+
+Returns: 
+{
+        "message" : "Patient fetched successfully",
+        "resultObj" : {JSON containing profile of patient with specified uuid in patientid if found (200)}
+}
+(200)
+If not found (404)
+{
+        "message" : "No matching patient found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+
+
+
+
+PUT:
+
+
+JSON must contain patientid as uuid of patient, patientname as updated name of patient (or N/A), patientdob as updated date of birth of patient (in 'YYYY-MM-DD' format) (or N/A), patientgender as updated gender of patient (M / F) (or N/A), patientblood as blood group of patient (A+ / A- / B+ / B- / O+ / O- / AB+ / AB- ) (or N/A), patientphone as updated phone number of doctor (has to be a valid Bangladeshi number) (or N/A), patientpast as updated past medical history of patient (please make this brief) (or N/A), patientaddress as updated address of patient (please use smallest specific area string; instead of Babur Road, Mohammadpur, write Mohammadpur) (or N/A) and patientemail as updated email address of patient (must be valid) (or N/A)
+e.g.
+{
+        "patientname" : "Shian Khan",
+        "patientdob" : "1998-05-27",
+        "patientgender" : "M",
+        "patientblood" : "A+",
+        "patientpast" : "Tends to brush teeth with Odomos",
+        "patientphone" : "01694206996",
+        "patientaddress" : "Mohammadpur",
+        "patientemail" : "ilovenafiz@sexy.com"
+}
+
+
+
+
+N/A = no change required
+
+
+Returns: 
+JSON
+{
+        "message" : "Doctor updated successfully"
+} 
+(200)
+If not found (404)
+{
+        "message" : "No matching doctor found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+
+
+
+
+POST:
+
+
+JSON must contain patientname as name of patient, patientdob as date of birth of patient (in 'YYYY-MM-DD' format), patientgender as gender of patient (M / F), patientblood as blood group of patient (A+ / A- / B+ / B- / O+ / O- / AB+ / AB- ), patientphone as phone number of patient (has to be a valid Bangladeshi number), patientpast as past medical history of patient (please make this brief) (or N/A), patientaddress as address of patient (please use smallest specific area string; instead of Babur Road, Mohammadpur, write Mohammadpur) (or N/A) and patientemail as email address of patient (must be valid) (or N/A)
+e.g.
+{
+        "patientname" : "Shian Khan",
+        "patientdob" : "1998-05-27",
+        "patientgender" : "M",
+        "patientblood" : "A+",
+        "patientpast" : "Tends to brush teeth with Odomos",
+        "patientphone" : "01694206996",
+        "patientaddress" : "Mohammadpur",
+        "patientemail" : "ilovenafiz@sexy.com"
+}
+
+
+
+
+Returns: 
+JSON
+{
+        "message" : "Patient registered successfully"
+} 
+(200)
+Error message if failed (666)
+
+
+
+
+DELETE:
+
+
+JSON must contain patientid as uuid of patient
+e.g.
+{
+        "patientid" : "21a7f69d-70f3-426b-bd16-7b3e39b017b5"
+}
+
+
+Returns: 
+JSON
+{
+        "message" : "Patient deleted successfully"
+} 
+(200)
+If not found (404)
+{
+        "message" : "No matching patient found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+________________
+7. /patient/appointments
+
+
+
+
+POST:
+
+
+JSON must contain patientid as uuid of patient, docid as uuid of doctor, appDate as date of appointment (in ‘YYYY-MM-DD’ format), appStartTime and appEndTime as the start and end times of the appointmnet (in ‘HH:MM:SS’ format) and appStatus as the status of the appointment (usually ‘Scheduled’ for patients)
+e.g.
+{
+        "patientid" : "519b8a46-49e7-484d-a6d6-2f79fe0ed249",
+        "docid" : "099c2512-d2a4-402b-a1d2-0a8e922a2603",
+        "appDate" : "2020-04-13",
+        "appStartTime": "10:35",
+        "appEndTime" : "10:55",
+        "appStatus" : "Scheduled"
+}
+
+
+Returns: 
+JSON
+{
+        "message" : "Appointment posted successfully"
+} 
+(200)
+For other errors (666)
+{
+        "message": err_message
+}
+
+
+
+
+GET:
+
+
+JSON must contain patientid as uuid of patient
+e.g.
+{
+        "patientid" : "519b8a46-49e7-484d-a6d6-2f79fe0ed249",
+}
+
+
+Returns: 
+JSON
+{
+        "message" : "Appointments fetched successfully"
+} 
+(200)
+If not found (404)
+{
+        "message" : "No appointments found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+
+
+PUT:
+
+
+JSON must contain patientid as uuid of patient, docid as uuid of doctor, appDate as updated date of appointment (in ‘YYYY-MM-DD’ format), appStartTime and appEndTime as the updated start and end times of the appointmnet (in ‘HH:MM:SS’ format) and appStatus as the updated status of the appointment (usually ‘Scheduled’ for patients)
+e.g.
+{
+        "patientid" : "519b8a46-49e7-484d-a6d6-2f79fe0ed249",
+        "docid" : "099c2512-d2a4-402b-a1d2-0a8e922a2603",
+        "appDate" : "2020-04-13",
+        "appStartTime": "10:35",
+        "appEndTime" : "10:55",
+        "appStatus" : "Scheduled"
+}
+
+
+Returns: 
+JSON
+{
+        "message" : "Appointment updated successfully"
+} 
+(200)
+If not found (404)
+{
+        "message" : "No matching appointment found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+
+
+
+
+DELETE:
+
+
+JSON must contain patientid as uuid of patient, docid as uuid of doctor, appDate as updated date of appointment (in ‘YYYY-MM-DD’ format)
+e.g.
+{
+        "patientid" : "519b8a46-49e7-484d-a6d6-2f79fe0ed249",
+        "docid" : "099c2512-d2a4-402b-a1d2-0a8e922a2603",
+        "appDate" : "2020-04-13",
+}
+
+
+Returns: 
+JSON
+{
+        "message" : "Appointment deleted successfully"
+} 
+(200)
+If not found (404)
+{
+        "message" : "No matching appointment found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+________________
+
+
+8. /doctor/appointments
+
+
+GET:
+
+
+JSON must contain patientid as uuid of patient
+e.g.
+{
+        "docid" : "519b8a46-49e7-484d-a6d6-2f79fe0ed249",
+}
+
+
+Returns: 
+JSON
+{
+        "message" : "Appointments fetched successfully"
+} 
+(200)
+If not found (404)
+{
+        "message" : "No appointments found"
+}
+For other errors (666)
+{
+        "message": err_message
+}
+
+
+
+
+DELETE:
+
+
+JSON must contain patientid as uuid of patient, docid as uuid of doctor, appDate as updated date of appointment (in ‘YYYY-MM-DD’ format)
+e.g.
+{
+        "patientid" : "519b8a46-49e7-484d-a6d6-2f79fe0ed249",
+        "docid" : "099c2512-d2a4-402b-a1d2-0a8e922a2603",
+        "appDate" : "2020-04-13",
+}
+
+
+Returns: 
+JSON
+{
+        "message" : "Appointment deleted successfully"
+} 
+(200)
+If not found (404)
+{
+        "message" : "No matching appointment found"
+}
+For other errors (666)
+{
+        "message": err_message
+}

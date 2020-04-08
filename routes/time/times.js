@@ -2,41 +2,38 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../../dbPool');
 
-
-// For a specific doctor or patient to view the doctor's time schedule
 router.get('/', (req, res) => {
     const query = `SELECT * FROM DOCTOR_TIMES WHERE DOCTOR_ID = '${req.body.docid}'`;
     pool.query(query, (err, result) => {
-       if ( err )
-       {
-           res.status(404).send(err);
-       }
-       else
-       {
-           res.status(200).json(result.rows);
-       }
+        if ( err )
+        {
+            res.status(666).json({message: err});
+        }
+        else
+        {
+            if ( result.rows.length )
+                res.status(200).json({message: "Doctor times fetched successfully", resultobj: result.rows});
+            else
+                res.status(404).json({message: "No times found"});
+        }
     });
 });
 
-
-// For a specific doctor to create his/her specific time schedule
 router.post('/', (req, res) => {
     const query = `INSERT INTO DOCTOR_TIMES (doctor_id, sunStart, sunEnd, sunSlots, monStart, monEnd, monSlots, tuesStart, tuesEnd, tuesSlots, wedStart, wedEnd, wedSlots, thursStart, thursEnd, thursSlots, friStart, friEnd, friSlots, satStart, satEnd, satSlots) VALUES
     ('${req.body.docid}', '${req.body.docsunStart}', '${req.body.docsunEnd}', '${req.body.docsunSlots}', '${req.body.docmonStart}', '${req.body.docmonEnd}', '${req.body.docmonSlots}', '${req.body.doctuesStart}', '${req.body.doctuesEnd}', '${req.body.doctuesSlots}', '${req.body.docwedStart}', '${req.body.docwedEnd}', '${req.body.docwedSlots}', '${req.body.docthursStart}', '${req.body.docthursEnd}', '${req.body.docthursSlots}', '${req.body.docfriStart}', '${req.body.docfriEnd}', '${req.body.docfriSlots}', '${req.body.docsatStart}', '${req.body.docsatEnd}', '${req.body.docsatSlots}')`;
     pool.query(query, (err, result) => {
        if ( err )
        {
-           res.status(404).send(err);
+           res.status(666).json({message: err});
        }
        else
        {
-           res.status(200).json({message: "Times posted successfully"});
+           res.status(200).json({message: "Doctor times posted successfully"});
        }
     });
 });
 
-
-// For a specific doctor to update his/her time schedule
 router.put('/', (req, res) => {
     var query = `UPDATE DOCTOR_TIMES`;
     var arguments = new Map();
@@ -357,30 +354,62 @@ router.put('/', (req, res) => {
         }
     }
     query = query + ` WHERE DOCTOR_ID = '${req.body.docid}'`;
-    pool.query(query, (err, result) => {
-        if ( err )
+    const queryCheck = `SELECT * FROM DOCTOR_TIMES WHERE DOCTOR_ID = '${req.body.docid}'`;
+    pool.query(queryCheck, (err1, result1) => {
+        if ( err1 )
         {
-            res.status(404).send(err);
+            res.status(666).json({message: err1});
         }
         else
         {
-            res.status(200).json({message: "Times updated successfully"});
+            if ( result1.rowCount == 0 )
+            {
+                res.status(404).json({message: "No times found"});
+            }
+            else
+            {
+                pool.query(query, (err2, result2) => {
+                    if ( err2 )
+                    {
+                        res.status(666).json({message: err2});
+                    }
+                    else
+                    {
+                        res.status(200).json({message: "Doctor times updated successfully"});
+                    }
+                });
+            }
         }
     });
 });
 
-
-// For a specific doctor to delete his/her time schedule
 router.delete('/',  (req, res) => {
-    const query = `DELETE FROM DOCTOR_TIMES WHERE DOCTOR_ID = ${req.body.docid}`;
-    pool.query(query, (err, result) => {
-        if ( err )
+    const query = `DELETE FROM DOCTOR_TIMES WHERE DOCTOR_ID = '${req.body.docid}'`;
+    const queryCheck = `SELECT * FROM DOCTOR_TIMES WHERE DOCTOR_ID = '${req.body.docid}'`;
+    pool.query(queryCheck, (err1, result1) => {
+        if ( err1 )
         {
-            res.status(404).send(err);
+            res.status(666).json({message: err1});
         }
         else
         {
-            res.status(200).json({message: "Times deleted successfully"});
+            if ( result1.rowCount == 0 )
+            {
+                res.status(404).json({message: "No times found"});
+            }
+            else
+            {
+                pool.query(query, (err2, result2) => {
+                    if ( err2 )
+                    {
+                        res.status(666).json({message: err2});
+                    }
+                    else
+                    {
+                        res.status(200).json({message: "Doctor times deleted successfully"});
+                    }
+                });
+            }
         }
     });
 });

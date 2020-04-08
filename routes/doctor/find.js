@@ -2,9 +2,6 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../../dbPool');
 
-// For custom searches
-// req will be of type AND (all conditions have to match) or OR (some conditions may match only)
-// req may also contain the parameters name, location, specialty (if N/A, not included in query, otherwise included)
 router.get('/', (req, res) => {
     var query = 'SELECT *, AGE(DOB) FROM DOCTORS INNER JOIN DOCTOR_RATINGS ON DOCTORS.ID = DOCTOR_RATINGS.DOCTOR_ID';
     var tmp;
@@ -32,67 +29,51 @@ router.get('/', (req, res) => {
         arguments.set(2, `${req.body.docspecialty}`);
 
     var flag = 0;
-    for ( i = 0 ; i < 3 ; i++ )
-    {
-        if ( arguments.get(i) )
-        {
-            if ( i == 0 )
-            {
-                if ( flag == 0)
-                {
+    for ( i = 0 ; i < 3 ; i++ ) {
+        if (arguments.get(i)) {
+            if (i == 0) {
+                if (flag == 0) {
                     query = query + ` WHERE NAME = '${arguments.get(i)}'`;
                     flag = 1;
-                }
-                else if ( flag == 1 )
-                {
+                } else if (flag == 1) {
                     query = query + ` ${tmp} NAME = '${arguments.get(i)}'`;
                 }
             }
-            if ( i == 1 )
-            {
-                if ( flag == 0)
-                {
+            if (i == 1) {
+                if (flag == 0) {
                     query = query + ` WHERE LOCATION = '${arguments.get(i)}'`;
                     flag = 1;
-                }
-                else if ( flag == 1 )
-                {
+                } else if (flag == 1) {
                     query = query + ` ${tmp} LOCATION = '${arguments.get(i)}'`;
                 }
             }
-            if ( i == 2 )
-            {
-                if ( flag == 0)
-                {
+            if (i == 2) {
+                if (flag == 0) {
                     query = query + ` WHERE SPECIALTY = '${arguments.get(i)}'`;
                     flag = 1;
-                }
-                else if ( flag == 1 )
-                {
+                } else if (flag == 1) {
                     query = query + ` ${tmp} SPECIALTY = '${arguments.get(i)}'`;
                 }
             }
         }
     }
-    pool.query(query, (err, result) =>
-    {
+    pool.query(query, (err, result) => {
         if ( err )
         {
-            res.status(404).send(err);
+            res.status(666).json({message: err});
         }
         else
         {
-            res.status(200).json(result.rows);
+            if ( result.rowCount != 0 )
+                res.status(200).json({message: "Doctor fetched successfully", resultobj: result.rows});
+            else
+                res.status(404).json({message: "No matching doctor found"});
         }
     });
 });
 
-// For general display
-// Specialty and/or location must be specified
-// Will be based on rating
-// Top 5 doctor from selected specialty and/or location will be displayed or the specified number
 router.get('/top', (req, res) => {
-    var query = `SELECT *, AGE(DOCTORS.DOB) FROM DOCTORS INNER JOIN DOCTOR_RATINGS ON DOCTORS.ID = DOCTOR_RATINGS.DOCTOR_ID`;
+    var query = `SELECT *, AGE(DOCTORS.DOB) FROM DOCTORS INNER JOIN DOCTOR_RATINGS ON DOCTORS.ID = DOCTOR_RATINGS.DOCTOR_ID `;
 
     //map of arguments
     let arguments = new Map();
@@ -105,15 +86,15 @@ router.get('/top', (req, res) => {
 
     if ( arguments.get(0) && arguments.get(1) )
     {
-        query = query + `WHERE SPECIALTY = ${arguments.get(1)} AND LOCATION = ${arguments.get(0)}`;
+        query = query + `WHERE SPECIALTY = '${arguments.get(1)}' AND LOCATION = '${arguments.get(0)}'`;
     }
     else if ( arguments.get(0) )
     {
-        query = query + `WHERE LOCATION = ${arguments.get(0)}`;
+        query = query + `WHERE LOCATION = '${arguments.get(0)}'`;
     }
     else if ( arguments.get(1) )
     {
-        query = query + `WHERE SPECIALTY = ${arguments.get(1)}`;
+        query = query + `WHERE SPECIALTY = '${arguments.get(1)}'`;
     }
     else
     {
@@ -127,16 +108,17 @@ router.get('/top', (req, res) => {
     {
         query = query + ` ORDER BY DOCTOR_RATINGS.AVERAGE LIMIT 5`;
     }
-    console.log(query);
-    pool.query(query, (err, result) =>
-    {
+    pool.query(query, (err, result) => {
         if ( err )
         {
-            res.status(404).send(err);
+            res.status(666).json({message: err});
         }
         else
         {
-            res.status(200).json(result.rows);
+            if ( result.rowCount != 0 )
+                res.status(200).json({message: "Doctor fetched successfully", resultobj: result.rows});
+            else
+                res.status(404).json({message: "No matching doctor found"});
         }
     });
 });

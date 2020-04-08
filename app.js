@@ -15,7 +15,7 @@ app.post('/', (req, res) => {
    res.send('Posting to root');
 });
 
-app.use('/doctor/self', require('./routes/doctor/profile')); //done
+app.use('/doctor/profile', require('./routes/doctor/profile')); //done
 app.use('/doctor/find', require('./routes/doctor/find')); //done
 app.use('/doctor/ratings', require('./routes/ratings/doctor')); //done
 app.use('/doctor/times', require('./routes/time/times')); //done
