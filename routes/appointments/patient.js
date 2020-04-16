@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../../dbPool');
 
 
-router.get('/', (req, res) => {
+router.post('/get', (req, res) => {
     const query = `SELECT APPOINTMENTS.*, DOCTORS.NAME FROM APPOINTMENTS INNER JOIN DOCTORS ON APPOINTMENTS.DOCTOR_ID = DOCTORS.ID WHERE APPOINTMENTS.PATIENT_ID = '${req.body.patientid}'`;
     pool.query(query, (err, result) => {
         if ( err )
@@ -21,7 +21,7 @@ router.get('/', (req, res) => {
 });
 
 
-router.post('/', (req, res) => {
+router.post('/post', (req, res) => {
     const query = `insert into appointments(doctor_id, patient_id, dateOfAppointment, startTime, endTime, status) values ('${req.body.docid}', '${req.body.patientid}', '${req.body.appDate}', '${req.body.appStartTime}', '${req.body.appEndTime}', '${req.body.appStatus}')`;
     pool.query(query, (err, result) => {
         if ( err )
@@ -36,7 +36,7 @@ router.post('/', (req, res) => {
 });
 
 
-router.put('/', (req, res) => {
+router.put('/put', (req, res) => {
     var query = `UPDATE APPOINTMENTS`;
 
     var arguments = new Map();
@@ -138,7 +138,7 @@ router.put('/', (req, res) => {
 });
 
 
-router.delete('/', (req, res) => {
+router.delete('/delete', (req, res) => {
     const query = `DELETE FROM APPOINTMENTS WHERE DOCTOR_ID = '${req.body.docid}' AND PATIENT_ID = '${req.body.patientid}' AND DATEOFAPPOINTMENT = '${req.body.appDate}'`;
     const queryCheck = `SELECT * FROM APPOINTMENTS WHERE DOCTOR_ID = '${req.body.docid}' AND PATIENT_ID = '${req.body.patientid}' AND DATEOFAPPOINTMENT = '${req.body.appDate}'`;
     pool.query(queryCheck, (err1, result1) => {

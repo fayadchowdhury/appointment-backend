@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../../dbPool');
 
-router.get('/', (req, res) => {
+router.post('/get', (req, res) => {
     var query = 'SELECT *, AGE(DOB) FROM DOCTORS INNER JOIN DOCTOR_RATINGS ON DOCTORS.ID = DOCTOR_RATINGS.DOCTOR_ID';
     var tmp;
 
@@ -72,7 +72,7 @@ router.get('/', (req, res) => {
     });
 });
 
-router.get('/top', (req, res) => {
+router.post('/top/get', (req, res) => {
     var query = `SELECT *, AGE(DOCTORS.DOB) FROM DOCTORS INNER JOIN DOCTOR_RATINGS ON DOCTORS.ID = DOCTOR_RATINGS.DOCTOR_ID `;
 
     //map of arguments

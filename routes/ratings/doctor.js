@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../../dbPool');
 
 
-router.put('/', (req, res) => {
+router.put('/put', (req, res) => {
    const docid = req.body.docid;
    const oldQuery = `SELECT NUMRATINGS, SUMRATINGS FROM DOCTOR_RATINGS WHERE DOCTOR_ID = '${docid}'`;
    var oldSum, oldNum;

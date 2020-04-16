@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../../dbPool');
 
-router.get('/', (req, res) => {
+router.post('/get', (req, res) => {
     const query = `SELECT *, AGE(DOB) FROM DOCTORS INNER JOIN DOCTOR_RATINGS ON DOCTORS.ID = DOCTOR_RATINGS.DOCTOR_ID WHERE ID = '${req.body.docid}'`;
     pool.query(query, (err, result) => {
         if ( err )
@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
     });
 });
 
-router.post('/', (req, res) => {
+router.post('/post', (req, res) => {
     const query = `insert into doctors 
     (id, name, dob, gender, blood, phone, specialty, bmdc, location, email) values 
     (uuid_generate_v4(), '${req.body.docname}', '${req.body.docdob}', '${req.body.docgender}', '${req.body.docblood}', '${req.body.docphone}', '${req.body.docspecialty}', '${req.body.docbmdc}', '${req.body.doclocation}', '${req.body.docemail}')`;
@@ -35,7 +35,7 @@ router.post('/', (req, res) => {
     });
 });
 
-router.put('/', (req, res) => {
+router.put('/put', (req, res) => {
     var query = `UPDATE DOCTORS`;
 
     //map of arguments
@@ -199,7 +199,7 @@ router.put('/', (req, res) => {
     });
 });
 
-router.delete('/', (req, res) => {
+router.delete('/delete', (req, res) => {
     const query = `DELETE FROM DOCTORS WHERE ID = '${req.body.docid}'`;
     const queryCheck = `SELECT * FROM DOCTORS WHERE ID = '${req.body.docid}'`;
     pool.query(queryCheck, (err1, result1) => {

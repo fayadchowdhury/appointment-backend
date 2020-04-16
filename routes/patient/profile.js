@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../../dbPool');
 
-router.post('/', (req, res) => {
+router.post('/post', (req, res) => {
    const query = `insert into patients (id, name, dob, gender, blood, past, phone, address, email) values (uuid_generate_v4(), '${req.body.patientname}', '${req.body.patientdob}', '${req.body.patientgender}', '${req.body.patientblood}', '${req.body.patientpast}', '${req.body.patientphone}', '${req.body.patientaddress}', '${req.body.patientemail}');`
    pool.query(query, (err, result) => {
       if ( err )
@@ -16,7 +16,7 @@ router.post('/', (req, res) => {
    });
 });
 
-router.get('/', (req, res) => {
+router.post('/get', (req, res) => {
    const query = `SELECT * FROM PATIENTS WHERE ID = '${req.body.patientid}'`;
    pool.query(query, (err, result) => {
       if ( err )
@@ -33,7 +33,7 @@ router.get('/', (req, res) => {
    });
 });
 
-router.put('/', (req, res) => {
+router.put('/put', (req, res) => {
    var query = `UPDATE PATIENTS`;
 
    //map of arguments
@@ -182,7 +182,7 @@ router.put('/', (req, res) => {
    });
 });
 
-router.delete('/', (req, res) => {
+router.delete('/delete', (req, res) => {
    const query = `DELETE FROM PATIENTS WHERE ID = '${req.body.patientid}'`;
    const queryCheck = `SELECT * FROM PATIENTS WHERE ID = '${req.body.patientid}'`;
    pool.query(queryCheck, (err1, result1) => {
