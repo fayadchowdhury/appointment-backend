@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../../dbPool');
 
 
-router.get('/', (req, res) => {
+router.post('/get', (req, res) => {
     const query = `SELECT APPOINTMENTS.*, PATIENTS.NAME FROM APPOINTMENTS INNER JOIN PATIENTS ON APPOINTMENTS.PATIENT_ID = PATIENTS.ID WHERE APPOINTMENTS.DOCTOR_ID = '${req.body.docid}'`;
     pool.query(query, (err, result) => {
         if ( err )
@@ -21,7 +21,7 @@ router.get('/', (req, res) => {
 });
 
 
-router.delete('/', (req, res) => {
+router.delete('/delete', (req, res) => {
     const query = `DELETE FROM APPOINTMENTS WHERE DOCTOR_ID = '${req.body.docid}' AND PATIENT_ID = '${req.body.patientid}' AND DATEOFAPPOINTMENT = '${req.body.appDate}'`;
     const queryCheck = `SELECT * FROM APPOINTMENTS WHERE DOCTOR_ID = '${req.body.docid}' AND PATIENT_ID = '${req.body.patientid}' AND DATEOFAPPOINTMENT = '${req.body.appDate}'`;
     pool.query(queryCheck, (err1, result1) => {

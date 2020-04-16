@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../../dbPool');
 
-router.get('/', (req, res) => {
+router.post('/get', (req, res) => {
     const query = `SELECT * FROM DOCTOR_TIMES WHERE DOCTOR_ID = '${req.body.docid}'`;
     pool.query(query, (err, result) => {
         if ( err )
@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
     });
 });
 
-router.post('/', (req, res) => {
+router.post('/post', (req, res) => {
     const query = `INSERT INTO DOCTOR_TIMES (doctor_id, sunStart, sunEnd, sunSlots, monStart, monEnd, monSlots, tuesStart, tuesEnd, tuesSlots, wedStart, wedEnd, wedSlots, thursStart, thursEnd, thursSlots, friStart, friEnd, friSlots, satStart, satEnd, satSlots) VALUES
     ('${req.body.docid}', '${req.body.docsunStart}', '${req.body.docsunEnd}', '${req.body.docsunSlots}', '${req.body.docmonStart}', '${req.body.docmonEnd}', '${req.body.docmonSlots}', '${req.body.doctuesStart}', '${req.body.doctuesEnd}', '${req.body.doctuesSlots}', '${req.body.docwedStart}', '${req.body.docwedEnd}', '${req.body.docwedSlots}', '${req.body.docthursStart}', '${req.body.docthursEnd}', '${req.body.docthursSlots}', '${req.body.docfriStart}', '${req.body.docfriEnd}', '${req.body.docfriSlots}', '${req.body.docsatStart}', '${req.body.docsatEnd}', '${req.body.docsatSlots}')`;
     pool.query(query, (err, result) => {
@@ -34,7 +34,7 @@ router.post('/', (req, res) => {
     });
 });
 
-router.put('/', (req, res) => {
+router.put('/put', (req, res) => {
     var query = `UPDATE DOCTOR_TIMES`;
     var arguments = new Map();
 
@@ -383,7 +383,7 @@ router.put('/', (req, res) => {
     });
 });
 
-router.delete('/',  (req, res) => {
+router.delete('/delete',  (req, res) => {
     const query = `DELETE FROM DOCTOR_TIMES WHERE DOCTOR_ID = '${req.body.docid}'`;
     const queryCheck = `SELECT * FROM DOCTOR_TIMES WHERE DOCTOR_ID = '${req.body.docid}'`;
     pool.query(queryCheck, (err1, result1) => {
