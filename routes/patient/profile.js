@@ -17,7 +17,7 @@ router.post('/post', (req, res) => {
 });
 
 router.post('/get', (req, res) => {
-   const query = `SELECT * FROM PATIENTS WHERE ID = '${req.body.patientid}'`;
+   const query = `SELECT *, AGE(DOB) FROM PATIENTS WHERE ID = '${req.body.patientid}'`;
    pool.query(query, (err, result) => {
       if ( err )
       {
