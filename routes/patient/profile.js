@@ -182,7 +182,7 @@ router.put('/put', (req, res) => {
    });
 });
 
-router.delete('/delete', (req, res) => {
+router.post('/delete', (req, res) => {
    const query = `DELETE FROM PATIENTS WHERE ID = '${req.body.patientid}'`;
    const queryCheck = `SELECT * FROM PATIENTS WHERE ID = '${req.body.patientid}'`;
    pool.query(queryCheck, (err1, result1) => {

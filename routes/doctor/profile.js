@@ -199,7 +199,7 @@ router.put('/put', (req, res) => {
     });
 });
 
-router.delete('/delete', (req, res) => {
+router.post('/delete', (req, res) => {
     const query = `DELETE FROM DOCTORS WHERE ID = '${req.body.docid}'`;
     const queryCheck = `SELECT * FROM DOCTORS WHERE ID = '${req.body.docid}'`;
     pool.query(queryCheck, (err1, result1) => {

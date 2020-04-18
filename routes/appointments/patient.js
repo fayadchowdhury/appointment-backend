@@ -138,7 +138,7 @@ router.put('/put', (req, res) => {
 });
 
 
-router.delete('/delete', (req, res) => {
+router.post('/delete', (req, res) => {
     const query = `DELETE FROM APPOINTMENTS WHERE DOCTOR_ID = '${req.body.docid}' AND PATIENT_ID = '${req.body.patientid}' AND DATEOFAPPOINTMENT = '${req.body.appDate}'`;
     const queryCheck = `SELECT * FROM APPOINTMENTS WHERE DOCTOR_ID = '${req.body.docid}' AND PATIENT_ID = '${req.body.patientid}' AND DATEOFAPPOINTMENT = '${req.body.appDate}'`;
     pool.query(queryCheck, (err1, result1) => {
