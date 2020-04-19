@@ -102,11 +102,11 @@ router.post('/top/get', (req, res) => {
     }
     if ( req.body.limit != "N/A" )
     {
-        query = query + ` ORDER BY DOCTOR_RATINGS.AVERAGE LIMIT ${req.body.limit}`;
+        query = query + ` ORDER BY DOCTOR_RATINGS.AVERAGE DESC LIMIT ${req.body.limit}`;
     }
     else
     {
-        query = query + ` ORDER BY DOCTOR_RATINGS.AVERAGE LIMIT 5`;
+        query = query + ` ORDER BY DOCTOR_RATINGS.AVERAGE DESC LIMIT 5`;
     }
     pool.query(query, (err, result) => {
         if ( err )
