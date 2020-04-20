@@ -10,7 +10,7 @@ router.put('/put', (req, res) => {
    pool.query(oldQuery, (err1, result1) => {
        if ( err1 )
        {
-           res.status(666).json({message: err1});
+           res.status(500).json({message: err1});
        }
        else
        {
@@ -28,7 +28,7 @@ router.put('/put', (req, res) => {
                pool.query(newQuery, (err2, result2) => {
                    if ( err2 )
                    {
-                       res.status(666).json({message: err2});
+                       res.status(500).json({message: err2});
                    }
                    else
                    {

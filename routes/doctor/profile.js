@@ -7,7 +7,7 @@ router.post('/get', (req, res) => {
     pool.query(query, (err, result) => {
         if ( err )
         {
-            res.status(666).json({message: err});
+            res.status(500).json({message: err});
         }
         else
         {
@@ -26,11 +26,17 @@ router.post('/post', (req, res) => {
     pool.query(query, (err, result) => {
         if ( err )
         {
-            res.status(666).json({message: err});
+            res.status(500).json({message: err});
         }
         else
         {
-            res.status(200).json({message: "Doctor registered successfully"});
+            const retQuery = `select * from doctors where name = '${req.body.docname}' and dob = '${req.body.docdob}' and gender = '${req.body.docgender}' and blood = '${req.body.docblood}' and specialty = '${req.body.docspecialty}' and phone = '${req.body.docphone}' and location = '${req.body.doclocation}' and email = '${req.body.docemail}' and bmdc = '${req.body.docbmdc}'`
+            pool.query(retQuery, (err2, result2) => {
+                if ( err2 )
+                    res.status(500).json({message: err2})
+                else
+                    res.status(200).json({message: "Doctor registered successfully", resultobj: result2.rows});
+            })
         }
     });
 });
@@ -174,7 +180,7 @@ router.put('/put', (req, res) => {
     pool.query(queryCheck, (err1, result1) => {
         if ( err1 )
         {
-            res.status(666).json({message: err1});
+            res.status(500).json({message: err1});
         }
         else
         {
@@ -187,11 +193,16 @@ router.put('/put', (req, res) => {
                 pool.query(query, (err2, result2) => {
                     if ( err2 )
                     {
-                        res.status(666).json({message: err2});
+                        res.status(500).json({message: err2});
                     }
                     else
                     {
-                        res.status(200).json({message: "Doctor updated successfully"});
+                        pool.query(queryCheck, (err3, result3) => {
+                            if ( err3 )
+                                res.status(500).json({message: err3})
+                            else
+                                res.status(200).json({message: "Doctor updated successfully", resultobj: result3.rows});
+                        })
                     }
                 });
             }
@@ -205,7 +216,7 @@ router.post('/delete', (req, res) => {
     pool.query(queryCheck, (err1, result1) => {
         if ( err1 )
         {
-            res.status(666).json({message: err1});
+            res.status(500).json({message: err1});
         }
         else
         {
@@ -218,7 +229,7 @@ router.post('/delete', (req, res) => {
                 pool.query(query, (err2, result2) => {
                     if ( err2 )
                     {
-                        res.status(666).json({message: err2});
+                        res.status(500).json({message: err2});
                     }
                     else
                     {

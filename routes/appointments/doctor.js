@@ -8,7 +8,7 @@ router.post('/get', (req, res) => {
     pool.query(query, (err, result) => {
         if ( err )
         {
-            res.status(666).json({message: err});
+            res.status(500).json({message: err});
         }
         else
         {
@@ -27,7 +27,7 @@ router.post('/delete', (req, res) => {
     pool.query(queryCheck, (err1, result1) => {
         if ( err1 )
         {
-            res.status(666).json({message: err1});
+            res.status(500).json({message: err1});
         }
         else
         {
@@ -37,7 +37,7 @@ router.post('/delete', (req, res) => {
                 {
                     if ( err2 )
                     {
-                        res.status(666).json({message: err2});
+                        res.status(500).json({message: err2});
                     }
                     else
                     {
