@@ -60,7 +60,7 @@ router.post('/get', (req, res) => {
     pool.query(query, (err, result) => {
         if ( err )
         {
-            res.status(666).json({message: err});
+            res.status(500).json({message: err});
         }
         else
         {
@@ -111,7 +111,7 @@ router.post('/top/get', (req, res) => {
     pool.query(query, (err, result) => {
         if ( err )
         {
-            res.status(666).json({message: err});
+            res.status(500).json({message: err});
         }
         else
         {

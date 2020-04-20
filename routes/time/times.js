@@ -7,7 +7,7 @@ router.post('/get', (req, res) => {
     pool.query(query, (err, result) => {
         if ( err )
         {
-            res.status(666).json({message: err});
+            res.status(500).json({message: err});
         }
         else
         {
@@ -25,11 +25,17 @@ router.post('/post', (req, res) => {
     pool.query(query, (err, result) => {
        if ( err )
        {
-           res.status(666).json({message: err});
+           res.status(500).json({message: err});
        }
        else
        {
-           res.status(200).json({message: "Doctor times posted successfully"});
+           const retQuery = `select * from doctor_times where doctor_id = '${req.body.docid}'`
+           pool.query(retQuery, (err2, result2) => {
+               if ( err2 )
+                   res.status(500).json({message: err2})
+               else
+                   res.status(200).json({message: "Doctor times posted successfully", resultobj: result2.rows});
+           })
        }
     });
 });
@@ -358,7 +364,7 @@ router.put('/put', (req, res) => {
     pool.query(queryCheck, (err1, result1) => {
         if ( err1 )
         {
-            res.status(666).json({message: err1});
+            res.status(500).json({message: err1});
         }
         else
         {
@@ -371,11 +377,16 @@ router.put('/put', (req, res) => {
                 pool.query(query, (err2, result2) => {
                     if ( err2 )
                     {
-                        res.status(666).json({message: err2});
+                        res.status(500).json({message: err2});
                     }
                     else
                     {
-                        res.status(200).json({message: "Doctor times updated successfully"});
+                        pool.query(queryCheck, (err3, result3) => {
+                            if ( err3 )
+                                res.status(500).json({message: err3})
+                            else
+                                res.status(200).json({message: "Doctor times updated successfully", resultobj: result3.rows});
+                        })
                     }
                 });
             }
@@ -389,7 +400,7 @@ router.post('/delete',  (req, res) => {
     pool.query(queryCheck, (err1, result1) => {
         if ( err1 )
         {
-            res.status(666).json({message: err1});
+            res.status(500).json({message: err1});
         }
         else
         {
@@ -402,7 +413,7 @@ router.post('/delete',  (req, res) => {
                 pool.query(query, (err2, result2) => {
                     if ( err2 )
                     {
-                        res.status(666).json({message: err2});
+                        res.status(500).json({message: err2});
                     }
                     else
                     {

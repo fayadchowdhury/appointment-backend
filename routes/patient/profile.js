@@ -4,14 +4,22 @@ const pool = require('../../dbPool');
 
 router.post('/post', (req, res) => {
    const query = `insert into patients (id, name, dob, gender, blood, past, phone, address, email) values (uuid_generate_v4(), '${req.body.patientname}', '${req.body.patientdob}', '${req.body.patientgender}', '${req.body.patientblood}', '${req.body.patientpast}', '${req.body.patientphone}', '${req.body.patientaddress}', '${req.body.patientemail}');`
+   console.log(query)
    pool.query(query, (err, result) => {
       if ( err )
       {
-         res.status(666).json({message: err});
+         res.status(500).json({message: err});
       }
       else
       {
-         res.status(200).json({message: "Patient registered successfully"});
+         const retQuery = `select *, age(dob) from patients where name = '${req.body.patientname}' and dob = '${req.body.patientdob}' and gender = '${req.body.patientgender}' and blood = '${req.body.patientblood}' and past = '${req.body.patientpast}' and phone = '${req.body.patientphone}' and address = '${req.body.patientaddress}' and email = '${req.body.patientemail}'`
+         console.log(retQuery)
+         pool.query(retQuery, (err2, result2) => {
+            if ( err2 )
+               res.status(500).json({message: err2})
+            else
+               res.status(200).json({message: "Patient registered successfully", resultobj: result2.rows});
+         })
       }
    });
 });
@@ -21,7 +29,7 @@ router.post('/get', (req, res) => {
    pool.query(query, (err, result) => {
       if ( err )
       {
-         res.status(666).json({message: err});
+         res.status(500).json({message: err});
       }
       else
       {
@@ -157,7 +165,7 @@ router.put('/put', (req, res) => {
    pool.query(queryCheck, (err1, result1) => {
       if ( err1 )
       {
-         res.status(666).json({message: err1});
+         res.status(500).json({message: err1});
       }
       else
       {
@@ -170,11 +178,17 @@ router.put('/put', (req, res) => {
             pool.query(query, (err2, result2) => {
                if ( err2 )
                {
-                  res.status(666).json({message: err2});
+                  res.status(500).json({message: err2});
                }
                else
                {
-                  res.status(200).json({message: "Patient updated successfully"});
+                  const retQuery = `select *, age(dob) from patients where id = '${req.body.patientid}'`
+                  pool.query(retQuery, (err3, result3) => {
+                     if ( err3 )
+                        res.status(500).json({message: err3})
+                     else
+                        res.status(200).json({message: "Patient updated successfully", resultobj: result3.rows});
+                  })
                }
             });
          }
@@ -188,7 +202,7 @@ router.post('/delete', (req, res) => {
    pool.query(queryCheck, (err1, result1) => {
       if ( err1 )
       {
-         res.status(666).json({message: err1})
+         res.status(500).json({message: err1})
       }
       else
       {
@@ -201,7 +215,7 @@ router.post('/delete', (req, res) => {
             pool.query(query, (err2, result2) => {
                if ( err2 )
                {
-                  res.status(666).json({message: err});
+                  res.status(500).json({message: err});
                }
                else
                {
